@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e6728243c3982bd95c23ad63dc24514046979d9cf07efbb6dc60150bdf182788"
+            "sha256": "9ac3d7bc6deb3356c600d4e0f1d60612d6ddfe3fc494c02d6b1a78c009167681"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -23,6 +23,10 @@
             ],
             "index": "pypi",
             "version": "==7.0"
+        },
+        "nanoleaf": {
+            "git": "https://github.com/bharat/nanoleaf.git",
+            "ref": "3a2b4d5d61ead6580d5aa031410c9bb08f36ebea"
         }
     },
     "develop": {}
