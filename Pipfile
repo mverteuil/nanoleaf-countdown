@@ -4,10 +4,18 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pdbpp = "*"
+isort = "*"
+black = "*"
 
 [packages]
 click = "*"
 nanoleaf = {git = "https://github.com/bharat/nanoleaf.git"}
+bokeh = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true
