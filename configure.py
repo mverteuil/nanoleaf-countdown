@@ -1,4 +1,5 @@
 import configparser
+import random
 import time
 
 import bokeh
@@ -54,24 +55,25 @@ def __write_config(config):
 def display_panel_ordering(config, new_ordering):
     """Progressively display light on panels using the new id ordering."""
     saved_ordering = config["device"]["panel_order"].split(",")
-    panel_count = len(saved_ordering)
     assert not (
         set(new_ordering).difference(saved_ordering)
     ), f"Missing some panel ids, expected all of the following: {saved_ordering}"
 
     device = Aurora(config["device"]["address"], config["device"]["token"])
+    click.echo("Turning on")
+    device.on = True
     stream = device.effect_stream()
 
+    # Select a random color
+    colors = dict.fromkeys(("red", "green", "blue"), 0)
+    selected_color = random.choice(list(colors.keys()))
+
+    panel_count = len(new_ordering)
     step_size = 255 // panel_count
+
     for index, panel_id in enumerate(new_ordering, start=1):
-        stream.panel_set(
-            int(panel_id),
-            red=step_size * index,
-            green=0,
-            blue=0,
-            white=1,
-            transition_time=0,
-        )
+        colors[selected_color] = index * step_size
+        stream.panel_set(int(panel_id), white=1, transition_time=0, **colors)
         time.sleep(0.2)
 
 
@@ -117,7 +119,7 @@ def plot_panel_positions(config):
     plotting.show(plot)
 
 
-@click.option("--new-ordering", default=None)
+@click.option("--new-ordering", default="")
 @click.option("--plot-ordering", default=False)
 @click.command()
 def main(new_ordering, plot_ordering):
@@ -126,16 +128,20 @@ def main(new_ordering, plot_ordering):
         plot_panel_positions(config)
     else:
         # Order arrives LTR, but is stored in reverse
-        new_ordering = list(reversed(new_ordering.split(",")))
-        ordering = new_ordering or config["device"]["panel_order"]
+        ordering = list(
+            reversed((new_ordering or config["device"]["panel_order"]).split(","))
+        )
         try:
+            click.echo("Displaying...")
             display_panel_ordering(config, ordering)
-        except:
+        except Exception as e:
+            click.echo(e)
             sys.exit(1)
         else:
-            config["device"]["panel_order"] = ",".join(new_ordering)
-            __write_config(config)
-            click.echo("Saved new ordering.")
+            if new_ordering:
+                config["device"]["panel_order"] = ",".join(new_ordering)
+                __write_config(config)
+                click.echo("Saved new ordering.")
 
 
 if __name__ == "__main__":
