@@ -13,6 +13,7 @@ click = "*"
 nanoleaf = {git = "https://github.com/bharat/nanoleaf.git"}
 bokeh = "*"
 requests = "*"
+pytimeparse = "*"
 
 [requires]
 python_version = "3.7"

@@ -134,6 +134,7 @@ def main(new_ordering, plot_ordering):
         try:
             click.echo("Displaying...")
             display_panel_ordering(config, ordering)
+
         except Exception as e:
             click.echo(e)
             sys.exit(1)
